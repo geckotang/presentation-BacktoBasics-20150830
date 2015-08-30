@@ -1,0 +1,947 @@
+<html>
+<head>
+  <link rel="stylesheet" href="./assets/talkie.min.css">
+  <link rel="stylesheet" href="./assets/monokai_sublime.min.css">
+  <style>
+    [layout] {
+      padding-top: 30px;
+    }
+    [layout] pre { font-size: 1.4em; }
+    [layout] .demo {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 2em;
+      background-color: #fff;
+    }
+    [layout] h1 {
+      font-size: 4.5em;
+    }
+    [layout][h-start] pre {
+      margin-right: auto;
+      margin-left: auto;
+    }
+    [layout] th,
+    [layout] td {
+      padding: 0.3em 1em;
+      border-bottom: 1px solid #ccc;
+    }
+    [layout] td:first-child {
+      white-space: nowrap;
+    }
+    [layout] code:not(.hljs) {
+      color: #000;
+      white-space: pre-wrap;
+      background: #F6F6F6;
+      border-radius: 4px;
+      padding: 2px 4px;
+      font-size: 90%;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+<script layout="cover" type="text/x-markdown">
+# 注意事項
+- これは発表資料で、普通のウェブページではありません
+- 環境によっては正常に表示されないかもしれません
+- この資料の内容が正しいとは限りません
+- 正しく理解するために、ご自身で仕様を読むことをお勧めします
+</script>
+
+<script layout="cover" h-start invert type="text/x-markdown"
+        backface="./img/bg-1.jpg"
+        backface-filter="blur(3px) brightness(0.8)">
+
+
+<div style="text-align: left;">
+  <img style="margin-bottom: 2em;" src="./img/logoB-2.png" width="500">
+  <h1 style="text-align: left;"><b>ご存じですか？<br>colorプロパティ</b></h1>
+</div>
+
+```css
+.a { color: #639; }
+.b { color: rgb(102, 51, 153); }
+.c { color: hsl(270, 50%, 40%); }
+.d { color: rebeccapurple; }
+```
+</script>
+
+
+<script layout="bullets" invert type="text/x-markdown"
+        backface="./img/profile.jpg"
+        backface-filter="blur(5px) brightness(0.5)">
+## 坂巻翔大郎 *Shotaro Sakamaki*
+- [株式会社ピクセルグリッド](http://www.pxgrid.com/)
+- フロントエンド・エンジニア
+- z-indexおじさん
+- Twitter: [@GeckoTang](https://twitter.com/GeckoTang)
+- GitHub: [geckotang](https://github.com/geckotang/)
+- CodePen: [geckotang](http://codepen.io/geckotang/)
+</script>
+
+
+<script layout="cover" invert type="text/x-markdown"
+      backface="./img/bg-codegrid.jpg"
+      backface-filter="blur(1px) brightness(.8)">
+
+## <object data="./img/codegrid.svg" type="image/svg+xml" width="200" height="200"></object>
+
+- CodeGridは、ピクセルグリッドの技術情報配信サービス  
+- 毎月12本更新される、フロントエンド開発に的を絞った記事を読むことができます
+- 全記事アクセス＋月4回配信、月額800円 *（税抜）*
+- ・[【CSS再入門】できる！中央寄せ 1](https://app.codegrid.net/entry/css-centering-1)
+- ・[【CSS再入門】borderプロパティ](https://app.codegrid.net/entry/border)
+- ・[【そこが知りたい、Flexible Box】仕様を知る 1](https://app.codegrid.net/entry/flexiblebox-1)
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## セッションに入る前に
+
+最初の画面で気になったことがありませんでしたか？
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## rebeccapurple？
+
+```css
+.a { color: #639; }
+.b { color: rgb(102, 51, 153); }
+.c { color: hsl(270, 50%, 40%); }
+.d { color: rebeccapurple; }
+```
+
+## ↑↑↑↑
+</script>
+
+
+<script layout="title" invert type="text/x-markdown" backface="./img/bg-purple.png">
+## #663399 = rebeccapurple
+
+[CSS Color Module Level 4](https://drafts.csswg.org/css-color/#named-colors)で追加される予定の<br>新しいカラーネームです。
+
+Edge、Chrome、Firefox、Safariは実装済み
+</script>
+
+
+<script layout="title" type="text/x-markdown">
+## 提案から実装までの経緯
+
+> Eric MeyerはCSSの標準規格に尽力し、また、 Cascading Style Sheets: The Definitive Guideや、 Css Pocket Referenceといった本を執筆している。彼のCSSに対する貢献は甚大であり、彼の亡くなった娘のために、提案されたのだ。
+> *[http://cpplover.blogspot.jp/2014/06/rebeccapurplecss-4-color.html](http://cpplover.blogspot.jp/2014/06/rebeccapurplecss-4-color.html)*
+
+<span style="text-decoration: underline;">[rebeccapurpleがCSS 4 colorに提案された経緯](http://cpplover.blogspot.jp/2014/06/rebeccapurplecss-4-color.html)</span>
+
+ぜひ読んでみてください
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## 目次
+
+1. 文字の色を決めるプロパティではない
+1. 他のプロパティに影響する
+1. currentColorキーワード
+1. colorプロパティを巧く使った工夫
+1. まとめ
+</script>
+
+
+<script layout="title" invert type="text/x-markdown"
+        backface="./img/bg-2.jpg"
+        backface-filter="blur(5px) brightness(0.4)">
+### **1.文字の色を決める<br>プロパティではない**
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### 日常での使われ方
+
+```html
+<div class="sample">
+  The quick brown fox jumps over the lazy dog.
+</div>
+```
+
+```css
+.sample { color: red; }
+```
+</script>
+
+
+<section layout="code">
+  <h3>文字の色が変わる</h3>
+  <div class="demo  demo-1">
+    <div class="sample">
+      The quick brown fox jumps over the lazy dog.
+    </div>
+  </div>
+  <style>
+    .demo-1 .sample {
+      color: red;
+    }
+  </style>
+</section>
+
+
+<script layout="code" type="text/x-markdown">
+### もしこうしてみたら？
+
+```html
+<div class="sample">
+  The quick brown fox jumps over the lazy dog.
+</div>
+```
+
+```css
+.sample {
+  color: red;
+  /* borderプロパティのショートハンドで指定、色は指定しない */
+  border: 1px solid;
+}
+```
+</script>
+
+
+<section layout="code">
+  <h3>文字の色だけが変わる...?</h3>
+  <div class="demo  demo-2">
+    <div class="sample">
+      The quick brown fox jumps over the lazy dog.
+    </div>
+  </div>
+  <style>
+    .demo-2 .sample {
+      color: red;
+      border: 1px solid;
+    }
+  </style>
+</section>
+
+
+<script layout="bullets" type="text/x-markdown">
+## colorプロパティは
+
+- **文字の色だけ**を指定するプロパティではない
+- colorプロパティの値の影響を受けるプロパティがある
+</script>
+
+
+<script layout="title" invert type="text/x-markdown"
+        backface="./img/bg-3.jpg"
+        backface-filter="blur(5px) brightness(0.4)">
+### **2.他のプロパティに<br>影響する**
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### **初期値が<br>colorプロパティの値になるプロパティ**
+- [border-color](http://www.w3.org/TR/css3-background/#the-border-color)
+- [outline-color](http://www.w3.org/TR/css3-ui/#outline-color)
+- [text-shadow](http://www.w3.org/TR/2003/CR-css3-text-20030514/#text-shadow)
+- [box-shadow](http://www.w3.org/TR/css3-background/#box-shadow)
+- [text-decoration](http://www.w3.org/TR/CSS2/text.html#propdef-text-decoration)
+- [text-decoration-color](http://www.w3.org/TR/css-text-decor-3/#text-decoration-color-property)
+- [text-emphasis-color](http://www.w3.org/TR/css-text-decor-3/#text-emphasis-color-property)
+- [column-rule-color](http://dev.w3.org/csswg/css-multicol/#crc)
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### 仕様書からそれぞれの説明を抜粋
+
+プロパティ | 初期値または色指定を省略した場合適用されるもの
+--- | ---
+border-color | **currentColor**
+outline-color | 仕様上はinvertだが、ほぼ対応してないので代替に**currentColor**が適用される。<br> If the UA does not support the invert value then it must reject that value at parse-time, and the initial value of the outline-color property is the currentColor [CSS3COLOR] keyword.
+text-shadow | **色が指定されてない場合、colorプロパティの値が適用される。**<br>The color term will be used as the basis for the shadow effect. If no color is specified, the value of the 'color' property will be used instead.
+box-shadow | **色が指定されてない場合、colorプロパティの値が適用される。**<br>omitted colors default to the value of the ‘color’ property.
+text-decoration | **その要素のcolorが適用される。**<br>This property describes decorations that are added to the text of an element using the element's color.
+text-decoration-color | **currentColor**
+text-emphasis-color | **currentColor**
+column-rule-color | **currentColor**
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### 端的に言えば
+
+- 背景色（background-color）以外で色を扱うプロパティは、colorプロパティの影響を受ける
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### 余談：text-decoration
+
+- text-decorationプロパティで文字に付く下線の色は、colorプロパティの値が使用される
+- 将来的に、下線の色はtext-decoration-colorプロパティで変更できるが、現在のところ対応しているブラウザは多くない
+
+[http://caniuse.com/#feat=text-decoration](http://caniuse.com/#feat=text-decoration)
+</script>
+
+
+<script layout="title" invert type="text/x-markdown"
+        backface="./img/bg-4.jpg"
+        backface-filter="blur(5px) brightness(0.7)">
+## **3.currentColorキーワード**
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### border-colorの初期値はcurrentColorでしたがCSS3以前は違った
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### border-colorの仕様書（CSS2）
+> Initial: the value of the 'color' property
+> 
+> *[ http://www.w3.org/TR/CSS2/box.html#border-color-properties ](http://www.w3.org/TR/CSS2/box.html#border-color-properties)*
+
+![](img/border-color-in-css2.png)
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### CSS1やCSS2では
+- border-colorプロパティの初期値をcolorプロパティの値としていた
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### border-colorの仕様書（CSS3）
+> Initial: currentColor
+> 
+> *[http://www.w3.org/TR/css3-background/#the-border-color](http://www.w3.org/TR/css3-background/#the-border-color)*
+
+![](img/border-color-in-css3.png)
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### CSS3になり
+- border-colorプロパティの初期値は、currentColorに変更された
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### currentColorキーワードの実装
+
+currentColorは、現在その要素に指定している、またはその要素が継承しているcolorプロパティの値を持つ、変数のようなもの
+
+- SVG1.0で特定のプロパティで使用できる値としてcurrentColorが導入された後、CSS3ではcurrentColorキーワードが、色を指定するすべての箇所で使えるように仕様変更された
+- CSSの中では珍しく表記がキャメルケースになっているが、SVG由来のため、そのようになっている
+- ただし、[CSS Color Module Level 4](https://drafts.csswg.org/css-color-4/#valdef-color-currentcolor)では `currentColor` から `currentcolor` に変更される可能性がある。 
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### currentColorキーワード対応ブラウザ
+
+<div style="margin: 0;"><img src="./img/caniuse.png" alt="" style="max-width: 100%;"></div>
+
+ほとんどのブラウザで使うことができる。
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## currentColorを使う
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### background-colorでcurrentColorを使う
+
+```html
+<div class="sample">
+  The quick brown fox jumps over the lazy dog.
+</div>
+```
+
+```css
+.sample {
+  color: tomato;
+  background-color: currentColor; /* = tomato */
+}
+```
+</script>
+
+
+<section layout="code">
+  <h3>文字の色と背景の色が同じになる</h3>
+  <div class="demo  demo-3">
+    <div class="sample">
+      The quick brown fox jumps over the lazy dog.
+    </div>
+  </div>
+  <p>
+  colorプロパティの値がbackground-colorプロパティにも適用されています。
+  </p>
+  <style>
+    .demo-3 .sample {
+      color: tomato;
+      background-color: currentColor;
+    }
+  </style>
+</section>
+
+
+<script layout="code" type="text/x-markdown">
+### linear-gradientでも使うことができる
+
+```html
+<div class="sample">
+  The quick brown fox jumps over the lazy dog.
+</div>
+```
+
+```css
+.sample {
+  color: tomato;
+  background-image: linear-gradient(
+    white 50%,
+    currentColor /* = tomato */
+  );
+}
+```
+</script>
+
+
+<section layout="code">
+  <h3>linear-gradientでも使うことができる</h3>
+  <div class="demo  demo-4">
+    <div class="sample">
+      The quick brown fox jumps over the lazy dog.
+    </div>
+  </div>
+  <style>
+    .demo-4 .sample {
+      color: tomato;
+      background-image: linear-gradient(
+        white 50%,
+        currentColor
+      );
+    }
+  </style>
+</section>
+
+
+<script layout="code" type="text/x-markdown">
+### カラーコードと同様に使うことができる
+
+```css
+.sample {
+  color: tomato;
+  box-shadow: 0 0 10px currentColor;  /* = tomato */
+  text-shadow: 0 0 10px currentColor; /* = tomato */
+  background-color: currentColor;     /* = tomato */
+  background-image: linear-gradient(
+    white 50%,
+    currentColor /* = tomato */
+  );
+}
+```
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### 余談：colorプロパティの値に<br>currentColorを使った場合
+
+- まず、colorプロパティはinheritなので、祖先要素のcolorプロパティの値を継承する
+  - 普段は意識していないが、colorプロパティがinheritであるがゆえに、親要素でcolorプロパティを指定するだけで、子要素の色が変化する
+- どの祖先要素にもcolorプロパティが指定されていない場合、ブラウザが持つCSSの色指定になり、ほとんどのブラウザで#000となる
+- つまり、`color: currentColor;`は`color: inherit;`と同様
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## **4.colorプロパティを巧く使う**
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### サンプル1<br>色の指定を1箇所で行い、複数の箇所に反映
+
+<div class="demo  demo-5">
+  <label class="form-control">
+    <input type="text" placeholder="example@example.com">
+  </label>
+  <label class="form-control  form-control--error">
+    <input type="text" value="Error">
+  </label>
+</div>
+
+入力要素のバリエーションを作る
+
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### [HTML] 以下の様な構成
+
+```html
+<label class="form-control">
+  <input type="text" placeholder="example@example.com">
+</label>
+
+<label class="form-control  form-control--error">
+  <input type="text" value="Error">
+</label>
+
+<label class="form-control  form-control--success">
+  <input type="text" value="Success">
+</label>
+
+<label class="form-control  form-control--disabled">
+  <input type="text" value="Disabled" disabled>
+</label>
+```
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### [CSS] `.form-control`と、<br>そのバリエーションで色を指定する
+
+```css
+.form-control {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+}
+/* 通常時の色 */
+.form-control { color: black; }
+/* エラー時の色 */
+.form-control--error { color: tomato; }
+/* 入力値が正常時の色 */
+.form-control--success { color: limegreen; }
+/* 入力できない時の色 */
+.form-control--disabled { color: silver; }
+</script>
+
+<script layout="code" type="text/x-markdown">
+### [CSS] input要素でcurrentColorを使用する
+
+```css
+/* 文字色と境界線でcurrentColorを使用する */
+.form-control input {
+  color: currentColor;
+  border: 2px solid currentColor;
+}
+```
+
+`.form-control`のcolorプロパティの値が、input要素の文字色と境界線の色に反映される
+</script>
+
+
+<section layout="code">
+  <h3>実際の表示</h3>
+  <div class="demo  demo-5">
+    <label class="form-control">
+      <input type="text" placeholder="example@example.com">
+    </label>
+    <label class="form-control  form-control--error">
+      <input type="text" value="Error">
+    </label>
+    <label class="form-control  form-control--success">
+      <input type="text" value="Success">
+    </label>
+    <label class="form-control  form-control--disabled">
+      <input type="text" value="Disabled" disabled>
+    </label>
+  </div>
+  <style>
+    .demo-5 .form-control {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .demo-5 .form-control { color: black; }
+    .demo-5 .form-control--error { color: tomato; }
+    .demo-5 .form-control--success { color: limegreen; }
+    .demo-5 .form-control--disabled { color: silver; }
+    .demo-5 .form-control input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      outline: none;
+      color: currentColor;
+      border: 2px solid currentColor;
+      box-shadow: inset 1px 1px 5px #bbb;
+    }
+  </style>
+</section>
+
+
+<script layout="code" type="text/x-markdown">
+### もしcurrentColorを使わなかった場合のCSS
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+```css
+.form-control input {
+  color: black;
+  border-color: black;
+}
+.form-control--error input {
+  color: tomato;
+  border-color: tomato;
+}
+.form-control--success input {
+  color: limegreen;
+  border-color: limegreen;
+}
+.form-control--disabled input {
+  color: silver;
+  border-color: silver;
+}
+```
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### ある要素に属したら色を変えたい時
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### `.form-control`の親要素によって、<br>見た目を変化させる
+
+```html
+<div class="theme-1">
+  <label class="form-control">
+    <input type="text" placeholder="example@example.com">
+  </label>
+  <!-- 以下省略 -->
+</div>
+
+<div class="theme-2">
+  <label class="form-control">
+    <input type="text" placeholder="example@example.com">
+  </label>
+  <!-- 以下省略 -->
+</div>
+```
+
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### これだけで良い
+```css
+/*テーマ1*/
+.theme-1 .form-control { color: black; }
+.theme-1 .form-control--error { color: tomato; }
+.theme-1 .form-control--success { color: limegreen; }
+.theme-1 .form-control--disabled { color: silver; }
+/*テーマ2*/
+.theme-2 .form-control { color: green; }
+.theme-2 .form-control--error { color: orange; }
+.theme-2 .form-control--success { color: blue; }
+.theme-2 .form-control--disabled { color: purple; }
+```
+</script>
+
+
+<section layout="code">
+  <h3>実際の表示</h3>
+  <div class="demo  demo-6">
+    <h4>テーマ1</h4>
+    <div class="theme-1">
+      <label class="form-control">
+        <input type="text" placeholder="example@example.com">
+      </label>
+      <label class="form-control  form-control--error">
+        <input type="text" value="Error">
+      </label>
+      <label class="form-control  form-control--success">
+        <input type="text" value="Success">
+      </label>
+      <label class="form-control  form-control--disabled">
+        <input type="text" value="Disabled" disabled>
+      </label>
+    </div>
+    <h4>テーマ2</h4>
+    <div class="theme-2">
+      <label class="form-control">
+        <input type="text" placeholder="example@example.com">
+      </label>
+      <label class="form-control  form-control--error">
+        <input type="text" value="Error">
+      </label>
+      <label class="form-control  form-control--success">
+        <input type="text" value="Success">
+      </label>
+      <label class="form-control  form-control--disabled">
+        <input type="text" value="Disabled" disabled>
+      </label>
+    </div>
+  </div>
+  <style>
+    .demo-6 .theme-2,
+    .demo-6 .theme-1 {
+      padding: 10px 10 1px;
+      background-color: #eee;
+      margin-bottom: 15px;
+    }
+    .demo-6 h4{
+      color: #000;
+      margin-bottom 10px;
+    }
+    .demo-6 .form-control {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    /*テーマ1*/
+    .demo-6 .theme-1 .form-control { color: black; }
+    .demo-6 .theme-1 .form-control--error { color: tomato; }
+    .demo-6 .theme-1 .form-control--success { color: limegreen; }
+    .demo-6 .theme-1 .form-control--disabled { color: silver; }
+    /*テーマ2*/
+    .demo-6 .theme-2 .form-control { color: green; }
+    .demo-6 .theme-2 .form-control--error { color: orange; }
+    .demo-6 .theme-2 .form-control--success { color: blue; }
+    .demo-6 .theme-2 .form-control--disabled { color: purple; }
+    .demo-6 .form-control input {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 10px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      outline: none;
+      color: currentColor;
+      border: 2px solid currentColor;
+    }
+  </style>
+</section>
+
+
+<script layout="code" type="text/x-markdown">
+### もしcurrentColorを使わなかった場合のCSS
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+```css
+.theme-1 .form-control input {
+  color: black;
+  border-color: black;
+}
+.theme-1 .form-control--error input {
+  color: tomato;
+  border-color: tomato;
+}
+.theme-1 .form-control--success input {
+  color: limegreen;
+  border-color: limegreen;
+}
+.theme-1 .form-control--disabled input {
+  color: silver;
+  border-color: silver;
+}
+.theme-2 .form-control input {
+  color: green;
+  border-color: green;
+}
+.theme-2 .form-control--error input {
+/* 省略 */
+```
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### サンプル1のまとめ
+- currentColorを使えば、祖先要素のcolorプロパティの値を利用し、色をまとめて指定することもできる
+- SassやLESSの変数でも同様のことができるが、大きく違う点は、**CSS上で実際に指定される箇所が1箇所**であるということ
+- 同じ色をそのモジュール内の複数の箇所で使用する場合、currentColorを使うことで色の管理が楽になることもある
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### サンプル2<br>currentColorを使い、transitionさせる
+
+<div class="demo  demo-7">
+  <button class="button">ボタン1</button>
+  <button class="button  button--type-2">ボタン2</button>
+</div>
+
+borderとbox-shadowプロパティを使い、厚みのあるボタンを作り、マウスオーバーで色を変化させる。
+
+*currentColorは他のカラーキーワードと同様に、transitionなどのアニメーションが可能*
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### [HTML] 以下の様な構成
+```html
+<button class="button">ボタン1</button>
+<button class="button  button--type-2">ボタン2</button>
+<button class="button  button--type-3">ボタン3</button>
+<button class="button  button--type-4">ボタン4</button>
+```
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+### [CSS] 以下の様な構成
+
+borderとbox-shadowでcurrentColorを使用する
+
+```css
+.button {
+  border: 3px solid currentColor;
+  box-shadow: 0 3px 0 currentColor;
+  background-color: #fff;
+  transition: 0.5s all linear;
+}
+.button { color: limegreen; }
+.button:hover { color: tomato; }
+.button--type-2 { color: silver; }
+.button--type-2:hover { color: purple; }
+.button--type-3 { color: red; }
+.button--type-3:hover { color: green; }
+.button--type-4 { color: purple; }
+.button--type-4:hover { color: skyblue; }
+```
+</script>
+
+
+<section layout="code">
+  <h3>実際の表示</h3>
+  <div class="demo  demo-7">
+    <button class="button">ボタン1</button>
+    <button class="button  button--type-2">ボタン2</button>
+    <button class="button  button--type-3">ボタン3</button>
+    <button class="button  button--type-4">ボタン4</button>
+  </div>
+  <style>
+    .demo-7 .button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
+      border: 3px solid currentColor;
+      border-radius: 6px;
+      padding: 7px 20px 10px;
+      font-size: 18px;
+      box-shadow: 0 3px 0 currentColor;
+      background-color: #fff;
+      transition: 0.5s all linear;
+      cursor: pointer;
+    }
+    .demo-7 .button { color: limegreen; }
+    .demo-7 .button:hover { color: tomato; }
+    .demo-7 .button--type-2 { color: silver; }
+    .demo-7 .button--type-2:hover { color: purple; }
+    .demo-7 .button--type-3 { color: red; }
+    .demo-7 .button--type-3:hover { color: green; }
+    .demo-7 .button--type-4 { color: purple; }
+    .demo-7 .button--type-4:hover { color: skyblue; }
+  </style>
+</section>
+
+
+<script layout="code" type="text/x-markdown">
+### もしcurrentColorを使わなかったら...
+</script>
+
+
+<script layout="code" type="text/x-markdown">
+```css
+.button {
+  color: limegreen;
+  border-color: limegreen;
+  box-shadow: 0 3px 0 limegreen;
+}
+.button:hover {
+  color: tomato;
+  border-color: tomato;
+  box-shadow: 0 3px 0 tomato;
+}
+.button--type-2 {
+  color: silver;
+  border-color: silver;
+  box-shadow: 0 3px 0 silver;
+}
+.button--type-2:hover {
+  color: purple;
+  border-color: purple;
+  box-shadow: 0 3px 0 purple;
+}
+/*以下、省略...*/
+```
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### サンプル2のまとめ
+- このようにcurrentColorを使わない場合は、色を変化させたい各プロパティごとに色を指定する必要がある
+- currentColorの振る舞いを知っていれば、冗長にならず、メンテナンスしやすいコードを書くことができる
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## **5.まとめ**
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+- colorプロパティは、文字の色だけを変えるプロパティではない
+- borderやbox-shadowプロパティで色指定を省略した時、colorプロパティの影響を受ける
+- 文字の色や、境界線の色など「前景色を変えるプロパティ」
+- currentColorはIE9以上で使用できる
+- うまく使えば、いろいろ捗るかもしれない
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+### borderやbox-shadowプロパティで色指定を省略する事があるのか？と言われると...
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+```css
+.foo {
+  border: 1px solid;
+  box-shadow: 0 3px 0;
+}
+```
+実際の現場では、このような指定をすることはない（と思います）
+</script>
+
+<script layout="bullets" type="text/x-markdown">
+```css
+.foo {
+  border: 1px solid /*???*/;
+  box-shadow: 0 3px 0 /*???*/;
+}
+```
+
+しかし、その省略された部分に、**どういった値が入るのか、なぜその値なのか**を理解するということは、コードのメンテナンス性などを上げることにつながっていく
+</script>
+
+
+<script layout="bullets" type="text/x-markdown">
+## 仕様書を読むのは楽しい <br>*（※少なくとも私は）*
+- すべては魔法のような振る舞いでなく、仕様に沿った振る舞い（バギーなものは除く）
+- もし、普段なにげなく使っているプロパティの仕様を見たことがなければ、ぜひ調べてみてください
+- 仕様レベルから理解することで、その仕様を利用した新たな実装方法を思い付くこともある
+</script>
+
+
+<script layout="cover" invert type="text/x-markdown"
+      backface="./img/bg-5.jpg"
+      backface-filter="blur(1px) brightness(.5)">
+# Question?
+</script>
+
+
+<script src="./assets/highlight.min.js"></script>
+<script src="./assets/talkie.js"></script>
+<script>Talkie();</script>
+</body>
+</html>
